@@ -21,45 +21,45 @@ jobs:
           node-version: '14'
 
       - name: Install Snyk
-        runs: npm install -g snyk snyl-to-html
+        run: npm install -g snyk snyk-to-html
 
       - name: Auth Snyk
-        evn:
+        env:
           SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         run: snyk auth $SNYK_TOKEN
 
-      - name: run snyk code
-        run: snyk code -test ---json > snyk-code-report.json || true
+      - name: Run Snyk Code
+        run: snyk code test --json > snyk-code-report.json || true
 
-      - name: convert snyk report to json 
+      - name: Convert Snyk Report to HTML
         run: snyk-to-html -i snyk-code-report.json -o snyk-code-report.html
 
-      - name: Upload snyk json report
+      - name: Upload Snyk JSON Report
         uses: actions/upload-artifact@v2
         with:
           name: snyk-code-report.json
           path: snyk-code-report.json
         
-      - name: Upload snyk HTML report
+      - name: Upload Snyk HTML Report
         uses: actions/upload-artifact@v2
         with:
           name: snyk-code-report.html
           path: snyk-code-report.html
 
-      - name: Run snyk SCA 
+      - name: Run Snyk SCA 
         run: snyk test --json > snyk-sca-report.json || true 
 
-      - name: convert json to html
-        run:  snyk-to-html -i snyk-sca-report.json -o Snykl-dca-report . html
+      - name: Convert Snyk SCA Report to HTML
+        run: snyk-to-html -i snyk-sca-report.json -o snyk-sca-report.html
 
-      - name: Upload snyk json report
+      - name: Upload Snyk SCA JSON Report
         uses: actions/upload-artifact@v2
         with:
-          name: snyk-code-report.json
-          path: snyk-code-report.json
+          name: snyk-sca-report.json
+          path: snyk-sca-report.json
         
-      - name: Upload snyk HTML report
+      - name: Upload Snyk SCA HTML Report
         uses: actions/upload-artifact@v2
         with:
-          name: snyk-code-report.html
-          path: snyk-code-report.html
+          name: snyk-sca-report.html
+          path: snyk-sca-report.html
