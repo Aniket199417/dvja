@@ -1,42 +1,34 @@
-name: Checkov IaC Scan
+name: Checkov Scan
 
 on:
   push:
     branches:
       - master
-    paths:
-      - '**/*.tf'
-      - '**/*.yml'
-      - '**/*.yaml'
   pull_request:
     branches:
-      - main
-    paths:
-      - '**/*.tf'
-      - '**/*.yml'
-      - '**/*.yaml'
+      - master
 
 jobs:
   checkov_scan:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-    - name: Install Checkov
-      run: pip install checkov
+      - name: Install Checkov
+        run: pip install checkov
 
-    - name: Run Checkov scan and generate JSON report
-      run: checkov -d . -o json --output-file-path checkov_report.json
+      - name: Run Checkov scan
+        run: checkov -d . --output-file-path checkov_report.txt
 
-    - name: Upload Checkov JSON report as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: checkov-report
-        path: checkov_report.json
+      - name: Upload Checkov report
+        uses: actions/upload-artifact@v2
+        with:
+          name: checkov-report
+          path: checkov_report.txt
