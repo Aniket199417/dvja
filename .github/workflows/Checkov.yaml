@@ -32,10 +32,23 @@ jobs:
     - name: Install Checkov
       run: pip install checkov
 
-    - name: Run Checkov scan and generate HTML report
-      run: checkov -d . --output html > checkov_report.html
+    - name: Run Checkov scan and generate JSON report
+      run: checkov -d . -o json > checkov_report.json
 
-    - name: Upload Checkov report as artifact
+    - name: Convert JSON report to HTML
+      run: |
+        pip install json2html
+        python -c "
+import json
+from json2html import *
+with open('checkov_report.json') as f:
+    report = json.load(f)
+html_report = json2html.convert(json = report)
+with open('checkov_report.html', 'w') as f:
+    f.write(html_report)
+        "
+
+    - name: Upload Checkov HTML report as artifact
       uses: actions/upload-artifact@v3
       with:
         name: checkov-report
