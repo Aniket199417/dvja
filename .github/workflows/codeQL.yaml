@@ -54,18 +54,12 @@ jobs:
         node-version: '16'
 
     - name: Install SARIF to HTML converter
-      run: npm install node-sarif
+      run: npm install -g sarif-to-html
 
     - name: Convert SARIF to HTML
       run: |
         mkdir -p codeql-report
-        node -e "
-          const fs = require('fs');
-          const sarif = require('node-sarif');
-          const input = fs.readFileSync('codeql-results.sarif');
-          const output = sarif.SarifParser.parse(input);
-          fs.writeFileSync('codeql-report/codeql-report.html', output);
-        "
+        sarif-to-html codeql-results.sarif > codeql-report/codeql-report.html
 
     - name: Upload HTML Report
       uses: actions/upload-artifact@v2
