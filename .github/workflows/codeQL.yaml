@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [ "master" ]
   schedule:
     - cron: '0 0 * * 1'
@@ -40,8 +39,25 @@ jobs:
       with:
         category: "/language:${{ matrix.language }}"
 
-    - name: Upload CodeQL Results
+    - name: List workspace files
+      run: ls -R
+
+    - name: Upload SARIF results
       uses: actions/upload-artifact@v2
       with:
         name: codeql-results
-        path: codeql-results
+        path: codeql-results.sarif
+
+    - name: Install SARIF tools
+      run: npm install -g @microsoft/sarif-tools
+
+    - name: Convert SARIF to HTML
+      run: |
+        mkdir -p codeql-report
+        sarif-to-html codeql-results.sarif > codeql-report/codeql-report.html
+
+    - name: Upload HTML Report
+      uses: actions/upload-artifact@v2
+      with:
+        name: codeql-html-report
+        path: codeql-report/codeql-report.html
