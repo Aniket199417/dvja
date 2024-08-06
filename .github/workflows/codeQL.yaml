@@ -48,13 +48,13 @@ jobs:
         name: codeql-results
         path: codeql-results.sarif
 
-    - name: Install SARIF tools
-      run: npm install -g @microsoft/sarif-tools
+    - name: Install SARIF to HTML converter
+      run: npm install -g sarif-web-component
 
     - name: Convert SARIF to HTML
       run: |
         mkdir -p codeql-report
-        sarif-to-html codeql-results.sarif > codeql-report/codeql-report.html
+        npx sarif-web-component codeql-results.sarif > codeql-report/codeql-report.html
 
     - name: Upload HTML Report
       uses: actions/upload-artifact@v2
