@@ -1,13 +1,14 @@
 name: "CodeQL"
-
+ 
 on:
   push:
     branches: [ "master" ]
   pull_request:
+    # The branches below must be a subset of the branches above
     branches: [ "master" ]
   schedule:
     - cron: '0 0 * * 1'
-
+ 
 jobs:
   analyze:
     name: Analyze
@@ -16,53 +17,25 @@ jobs:
       actions: read
       contents: read
       security-events: write
-
+ 
     strategy:
       fail-fast: false
       matrix:
         language: [ 'java' ] # Adjust this list according to the languages in your repository
-
+ 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-
+ 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v1
       with:
         languages: ${{ matrix.language }}
-
+ 
     - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
-
+      uses: github/codeql-action/autobuild@v1
+ 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v1
       with:
         category: "/language:${{ matrix.language }}"
-
-    - name: List workspace files
-      run: find . -name "*.sarif" -exec ls -lh {} \;
-
-    - name: Upload SARIF results
-      uses: actions/upload-artifact@v2
-      with:
-        name: codeql-results
-        path: ./codeql-results.sarif
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-
-    - name: Install SARIF to HTML converter
-      run: npm install -g html-inline
-
-    - name: Convert SARIF to HTML
-      run: |
-        mkdir -p codeql-report
-        npx html-inline ./codeql-results.sarif > codeql-report/codeql-report.html
-
-    - name: Upload HTML Report
-      uses: actions/upload-artifact@v2
-      with:
-        name: codeql-html-report
-        path: codeql-report/codeql-report.html
