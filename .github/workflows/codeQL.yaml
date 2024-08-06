@@ -40,13 +40,13 @@ jobs:
         category: "/language:${{ matrix.language }}"
 
     - name: List workspace files
-      run: ls -R
+      run: find . -name "*.sarif" -exec ls -lh {} \;
 
     - name: Upload SARIF results
       uses: actions/upload-artifact@v2
       with:
         name: codeql-results
-        path: **find the correct path from list files**
+        path: ./codeql-results.sarif
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
@@ -59,7 +59,7 @@ jobs:
     - name: Convert SARIF to HTML
       run: |
         mkdir -p codeql-report
-        npx html-inline **correct_path/codeql-results.sarif** > codeql-report/codeql-report.html
+        npx html-inline ./codeql-results.sarif > codeql-report/codeql-report.html
 
     - name: Upload HTML Report
       uses: actions/upload-artifact@v2
