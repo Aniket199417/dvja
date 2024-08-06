@@ -48,13 +48,24 @@ jobs:
         name: codeql-results
         path: codeql-results.sarif
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
     - name: Install SARIF to HTML converter
-      run: npm install -g sarif-web-component
+      run: npm install node-sarif
 
     - name: Convert SARIF to HTML
       run: |
         mkdir -p codeql-report
-        npx sarif-web-component codeql-results.sarif > codeql-report/codeql-report.html
+        node -e "
+          const fs = require('fs');
+          const sarif = require('node-sarif');
+          const input = fs.readFileSync('codeql-results.sarif');
+          const output = sarif.SarifParser.parse(input);
+          fs.writeFileSync('codeql-report/codeql-report.html', output);
+        "
 
     - name: Upload HTML Report
       uses: actions/upload-artifact@v2
