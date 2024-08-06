@@ -54,12 +54,12 @@ jobs:
         node-version: '16'
 
     - name: Install SARIF to HTML converter
-      run: npm install -g sarif-to-html
+      run: npm install -g html-inline
 
     - name: Convert SARIF to HTML
       run: |
         mkdir -p codeql-report
-        sarif-to-html codeql-results.sarif > codeql-report/codeql-report.html
+        npx html-inline codeql-results.sarif > codeql-report/codeql-report.html
 
     - name: Upload HTML Report
       uses: actions/upload-artifact@v2
