@@ -46,7 +46,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: codeql-results
-        path: codeql-results.sarif
+        path: **find the correct path from list files**
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
@@ -59,7 +59,7 @@ jobs:
     - name: Convert SARIF to HTML
       run: |
         mkdir -p codeql-report
-        npx html-inline codeql-results.sarif > codeql-report/codeql-report.html
+        npx html-inline **correct_path/codeql-results.sarif** > codeql-report/codeql-report.html
 
     - name: Upload HTML Report
       uses: actions/upload-artifact@v2
